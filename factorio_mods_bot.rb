@@ -1,0 +1,119 @@
+# frozen_string_literal: true
+
+# Copyright (C) 2018 Sandro Jäckel.  All rights reserved.
+#
+# This file is part of Factorio-Mods-Bot.
+#
+# Factorio-Mods-Bot is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Canuby is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Canuby.  If not, see <http://www.gnu.org/licenses/>.
+# require 'active_support/core_ext/hash/conversions'
+require 'httparty'
+require 'nokogiri'
+require 'optparse'
+require 'ostruct'
+require 'yaml'
+
+@options = OpenStruct.new
+parser = OptionParser.new do |opts|
+  opts.on('-c', '--chat [chat]', 'Telegram chat_id where to send the notifications') do |c|
+    @options.chat = c
+  end
+
+  opts.on('-s', '--setup', 'Setup the yaml file.') do |t|
+    @options.setup = true
+  end
+
+  opts.on('-t', '--token [token]', 'Takes a telegram token to send notifications') do |t|
+    @options.token = t
+  end
+
+  opts.on_tail('-h', '--help', 'Show this help message') do
+        puts opts
+        exit
+      end
+end
+
+begin
+  parser.parse!(ARGV)
+rescue OptionParser::InvalidOption => e
+  puts('Unknown argument')
+  puts(e)
+end
+
+if @options.token.nil?
+  puts "Provide a bot token like: ruby factorio_mods_bot TOKEN='bot12345:ABCDEFG'"
+  exit
+end
+
+class Scraper
+  def page(url)
+    page = HTTParty.get(url)
+    @parsed_page ||= Nokogiri::HTML(page)
+  end
+end
+
+def mod_name (i)
+  @mods_page[i]['href'].split('/mod/')[1]
+end
+
+def send_notification(mod_name, author, link, from_version, to_version, new)
+  if new
+    text = "New Mod added: #{mod_name} at version #{to_version} by #{author} - #{link}"
+  else
+    text = "Updated Mod: #{mod_name} to version #{to_version} by #{author} - #{link}"
+  end
+  HTTParty.post("https://api.telegram.org/#{@options.token}/sendMessage", :body => {'chat_id' => @options.chat, 'text' => text})
+  # p text
+end
+
+if File.exist?('mods_data.yml') and not @options.setup
+  @mods = YAML.load_file('mods_data.yml')
+else
+  @options.setup = true
+  @mods = {}
+end
+
+@new_mods_pages = Scraper.new.page('https://mods.factorio.com/').css('.active-filters-bar').css('.pagination').css('li')[4].text.split(' ')[0].to_i
+
+(1...@new_mods_pages).each do |i|
+  @mods_page = Scraper.new.page("https://mods.factorio.com/#{i}").css('.mod-card').css('.mod-card-info-container').css('.mod-card-title').css('a')
+  (0...@mods_page.size).each do |i|
+    @mods.merge!(mod_name(i) => {}) unless @mods.key?(mod_name(i))
+    @mods[mod_name(i)].merge!('name'=> @mods_page[i].text, 'link'=> @mods_page[i]['href'] )
+  end
+
+  (0...@mods_page.size).each do |i|
+    link = "https://mods.factorio.com#{@mods[mod_name(i)]['link']}"
+    mod_page = Scraper.new.page(link).css('.mod-page-data-table')
+    author = mod_page.css('td')[1].text
+    online_version = mod_page.css('td')[11].text.split(' (')[0]
+    # next unless mod_name(i) == 'TjCustomPlayer'
+    if @mods[mod_name(i)]['version'] == online_version
+      # processed all updated/new mods
+      @options.done = true
+      break
+    elsif @mods[mod_name(i)]['version'].nil?
+      send_notification(mod_name(i), author, link, @mods[mod_name(i)]['version'], online_version, true)
+      @mods[mod_name(i)].merge!('version' =>  online_version)
+    else
+      send_notification(mod_name(i), author, link, @mods[mod_name(i)]['version'], online_version, false)
+      @mods[mod_name(i)].merge!('version' =>  online_version)
+    end
+
+    break if @options.setup
+  end
+
+  break if @options.setup || @options.done
+end
+
+File.write('mods_data.yml', @mods.to_yaml)

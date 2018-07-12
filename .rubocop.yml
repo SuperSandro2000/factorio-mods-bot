@@ -1,0 +1,17 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  TargetRubyVersion: 2.5
+
+Metrics/LineLength:
+  Max: 150
+
+Style/AsciiComments:
+  AllowedChars: [ä]
+
+Style/Documentation:
+  Exclude:
+    - 'test/**/*'
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
