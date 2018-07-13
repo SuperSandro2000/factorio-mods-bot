@@ -1,5 +1,8 @@
 # Factorio-Mods-Bot
 
+[![CodeFactor](https://www.codefactor.io/repository/github/SuperSandro2000/factorio-mods-bot/badge)](https://www.codefactor.io/repository/github/SuperSandro2000/factorio-mods-bot)
+![GitHub repo size in bytes](https://img.shields.io/github/repo-size/SuperSandro2000/factorio-mods-bot.svg?logo=github&label=Repo%20size&maxAge=3600)
+
 Factorio mod portal notification bot for Telegram.
 Currently in Alpha testing.
 
