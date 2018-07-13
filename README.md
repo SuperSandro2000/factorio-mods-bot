@@ -4,4 +4,4 @@ WIP
 
 # Usage
 
-Provide a bot token like `ruby factorio_mods_bot TOKEN='bot12345:ABCDEFG'`
+Provide a chat_id and bot token like `ruby factorio_mods_bot --chat '@chat' --token 'bot12345:ABCDEFG'`
