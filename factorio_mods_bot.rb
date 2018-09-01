@@ -67,11 +67,11 @@ def mod_name(mod)
   @mods_page[mod]['href'].split('/mod/')[1]
 end
 
-def send_notification(mod_name, author, link, to_version, new)
+def send_notification(name, author, link, to_version, new)
   text = if new
-           "New Mod added: #{mod_name} at version #{to_version} by #{author} - #{link}"
+           "New Mod added: #{name} at version #{to_version} by #{author} - #{link}"
          else
-           "Updated Mod: #{mod_name} to version #{to_version} by #{author} - #{link}"
+           "Updated Mod: #{name} to version #{to_version} by #{author} - #{link}"
          end
   HTTParty.post("https://api.telegram.org/#{@options.token}/sendMessage", body: { 'chat_id' => @options.chat, 'text' => text })
   # p text
@@ -103,10 +103,10 @@ end
       @options.done = true
       break
     elsif @mods[mod_name(mod)]['version'].nil?
-      send_notification(mod_name(mod), author, link, online_version, true)
+      send_notification(@mods[mod_name(mod)]['name'], author, link, online_version, true)
       @mods[mod_name(mod)]['version'] = online_version
     else
-      send_notification(mod_name(mod), author, link, online_version, false)
+      send_notification(@mods[mod_name(mod)]['name'], author, link, online_version, false)
       @mods[mod_name(mod)]['version'] = online_version
     end
 
