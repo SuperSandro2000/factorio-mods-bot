@@ -55,6 +55,8 @@ if @options.token.nil?
   exit
 end
 
+@options.file = '/home/hotpi/telegram-bots/factorio-mods-data.yml'
+
 # dummy Class
 class Scraper
   def page(url)
@@ -77,8 +79,8 @@ def send_notification(name, author, link, to_version, new)
   # p text
 end
 
-if File.exist?('mods_data.yml') && !@options.setup
-  @mods = YAML.load_file('mods_data.yml')
+if File.exist?(@options.file) && !@options.setup
+  @mods = YAML.load_file(@options.file)
 else
   @options.setup = true
   @mods = {}
@@ -116,4 +118,4 @@ end
   break if @options.setup || @options.done
 end
 
-File.write('mods_data.yml', @mods.to_yaml)
+File.write(@options.file, @mods.to_yaml)
