@@ -56,7 +56,7 @@ if @options.token.nil?
   exit
 end
 
-@options.file = '/home/hotpi/telegram-bots/factorio-mods-data.yml'
+@options.file = './factorio-mods-data.yml'
 
 # dummy Class
 class Scraper
