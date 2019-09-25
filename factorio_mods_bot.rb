@@ -91,6 +91,7 @@ end
 
 (1...@new_mods_pages).each do |page|
   @mods_page = Scraper.new.page("https://mods.factorio.com/#{page}").css('.mod-card').css('.mod-card-info-container').css('.mod-card-title').css('a')
+
   (0...@mods_page.size).each do |mod|
     @mods[mod_name(mod)] = {} unless @mods.key?(mod_name(mod))
     @mods[mod_name(mod)].merge!('name' => @mods_page[mod].text, 'link' => @mods_page[mod]['href'])
@@ -101,6 +102,7 @@ end
     mod_page = Scraper.new.page(link).css('.mod-page-data-table')
     author = mod_page.css('td')[1].text
     online_version = mod_page.css('td')[11].text.split(' (')[0]
+
     if @mods[mod_name(mod)]['version'] == online_version
       # processed all updated/new mods
       @options.done = true
