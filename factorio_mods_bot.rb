@@ -119,6 +119,7 @@ end
   end
 
   break if @options.setup || @options.done
+  File.write(@options.file, @mods.to_yaml)
 end
 
 File.write(@options.file, @mods.to_yaml)
