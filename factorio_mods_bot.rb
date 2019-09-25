@@ -56,7 +56,7 @@ if @options.token.nil?
   exit
 end
 
-@options.file = './factorio-mods-data.yml'
+@options.file = '/app/factorio-mods-data.yml'
 
 # dummy Class
 class Scraper
