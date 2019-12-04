@@ -6,11 +6,10 @@ RUN addgroup -S "$USER" && adduser -S -G "$USER" -u 1000 "$USER" \
   && addgroup "$USER" tty
 
 COPY [ "files/entrypoint.sh", "/usr/local/bin/" ]
-COPY [ "files/cron", "/app/" ]
 
 RUN apk add --no-cache --no-progress ruby ruby-bigdecimal ruby-json \
   && gem install bundler -v '~> 2' \
-  && crontab -u "$USER" /app/cron
+  && echo '*/15 * * * * ruby /app/factorio_mods_bot.rb -c "$CHANNEL" -t "$BOT_TOKEN" && $AFTER_COMMAND' | crontab -u "$USER" -
 
 COPY [ "Gemfile", "Gemfile.lock", "/app/" ]
 
