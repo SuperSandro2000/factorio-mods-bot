@@ -15,7 +15,8 @@ COPY [ "Gemfile", "Gemfile.lock", "/app/" ]
 
 ENV BUNDLE_SILENCE_ROOT_WARNING=1
 RUN apk add --no-cache --no-progress --virtual .dev g++ make ruby-dev zlib-dev \
-  && bundle install --no-cache --with=alpine --gemfile=/app/Gemfile \
+  && bundle config set no-cache 'true' \
+  && bundle install --with=alpine --gemfile=/app/Gemfile \
   && apk del .dev
 
 COPY [ "factorio_mods_bot.rb", "/app/" ]
