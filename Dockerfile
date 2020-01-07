@@ -7,6 +7,9 @@ RUN addgroup -S "$USER" && adduser -S -G "$USER" -u 1000 "$USER" \
 
 COPY [ "files/entrypoint.sh", "/usr/local/bin/" ]
 
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+
+# hadolint ignore=SC2016
 RUN apk add --no-cache --no-progress ruby ruby-bigdecimal ruby-json \
   && gem install bundler -v '~> 2' \
   && echo '*/15 * * * * ruby /app/factorio_mods_bot.rb -c "$CHANNEL" -t "$BOT_TOKEN" && $AFTER_COMMAND' | crontab -u "$USER" -
