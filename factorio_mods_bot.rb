@@ -107,7 +107,7 @@ end
       # processed all updated/new mods
       @options.done = true
       break
-    elsif @mods[mod_name(mod)]['version'].body.nil? || @mods[mod_name(mod)]['version'].body.empty?
+    elsif @mods[mod_name(mod)]['version'].nil?
       send_notification(@mods[mod_name(mod)]['name'], author, link, online_version, true)
       @mods[mod_name(mod)]['version'] = online_version
     else
