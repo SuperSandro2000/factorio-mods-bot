@@ -1,0 +1,11 @@
+--- document.rb.orig
++++ document.rb
+@@ -196,7 +196,7 @@
+           end
+ 
+           # read_memory pukes on empty docs
+-          if string_or_io.nil? or string_or_io.empty?
++          if string_or_io.body.nil? or string_or_io.body.empty?
+             return encoding ? new.tap { |i| i.encoding = encoding } : new
+           end
+ 
