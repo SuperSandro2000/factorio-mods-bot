@@ -61,8 +61,8 @@ end
 # dummy Class
 class Scraper
   def page(url)
-    page = HTTParty.get(url)
-    @page ||= Nokogiri::HTML(page)
+    response = HTTParty.get(url)
+    @page ||= Nokogiri::HTML(response.body)
   end
 end
 

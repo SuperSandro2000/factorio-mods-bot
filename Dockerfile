@@ -20,11 +20,6 @@ ENV BUNDLE_SILENCE_ROOT_WARNING=1
 RUN bundle config set no-cache 'true' \
   && bundle install --with=alpine --gemfile=/app/Gemfile
 
-# temp fix
-COPY [ "files/nokogiri.patch", "/tmp/" ]
-WORKDIR /usr/lib/ruby/gems/2.6.0/gems/nokogiri-1.10.7/lib/nokogiri/html
-RUN patch < /tmp/nokogiri.patch
-
 COPY [ "factorio_mods_bot.rb", "/app/" ]
 
 WORKDIR /app
