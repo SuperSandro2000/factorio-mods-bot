@@ -9,12 +9,13 @@ COPY [ "files/entrypoint.sh", "/usr/local/bin/" ]
 
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
+# bust cache when updating Gemfile to fetch newer prebuild gems
+COPY [ "Gemfile", "Gemfile.lock", "/app/" ]
+
 # hadolint ignore=SC2016
 RUN apk add --no-cache --no-progress ruby ruby-bigdecimal ruby-json ruby-nokogiri \
   && gem install bundler -v '~> 2' \
   && echo '*/15 * * * * ruby /app/factorio_mods_bot.rb -c "$CHANNEL" -t "$BOT_TOKEN" && $AFTER_COMMAND' | crontab -u "$USER" -
-
-COPY [ "Gemfile", "Gemfile.lock", "/app/" ]
 
 ENV BUNDLE_SILENCE_ROOT_WARNING=1
 RUN bundle config set no-cache 'true' \
