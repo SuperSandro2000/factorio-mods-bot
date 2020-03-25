@@ -10,5 +10,5 @@ gem 'nokogiri', '>= 1.10.8'
 # on alpine we need to check if some stdlib gems are installed
 group :alpine, optional: true do
   gem "bigdecimal", "1.4.1"
-  gem "json", "2.1.0"
+  gem "json", "2.3.0"
 end
