@@ -12,14 +12,23 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # bust cache when updating Gemfile to fetch newer prebuild gems
 COPY [ "Gemfile", "Gemfile.lock", "/app/" ]
 
-# hadolint ignore=SC2016
-RUN apk add --no-cache --no-progress ruby ruby-bigdecimal ruby-json ruby-nokogiri \
-  && gem install bundler -v '~> 2' \
-  && echo '*/15 * * * * ruby /app/factorio_mods_bot.rb -c "$CHANNEL" -t "$BOT_TOKEN" && $AFTER_COMMAND' | crontab -u "$USER" -
-
 ENV BUNDLE_SILENCE_ROOT_WARNING=1
-RUN bundle config set no-cache 'true' \
-  && bundle install --with=alpine --gemfile=/app/Gemfile
+# hadolint ignore=SC2016
+RUN apk add --no-cache --no-progress \
+    ruby \
+    ruby-bundler \
+    # use the prebuilt
+    ruby-nokogiri \
+  && apk add --no-cache --no-progress --virtual .build-deps \
+    gcc \
+    make \
+    musl-dev \
+    ruby-dev \
+  && bundle config set no-cache 'true' \
+  && bundle install --gemfile=/app/Gemfile \
+  && apk del --no-cache .build-deps \
+\
+  && echo '*/15 * * * * $BEFORE_COMMAND ; ruby /app/factorio_mods_bot.rb -c "$CHANNEL" -t "$BOT_TOKEN" && $AFTER_COMMAND' | crontab -u "$USER" -
 
 COPY [ "factorio_mods_bot.rb", "/app/" ]
 
