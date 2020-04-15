@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    bigdecimal (1.4.4)
+    bigdecimal (2.0.0)
     httparty (0.18.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
@@ -19,7 +19,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  bigdecimal (~> 1.0)
+  bigdecimal (~> 2.0)
   httparty (>= 0.18.0)
   json
   nokogiri (>= 1.10.9)
