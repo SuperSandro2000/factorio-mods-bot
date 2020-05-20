@@ -87,7 +87,7 @@ else
   @mods = {}
 end
 
-@new_mods_pages = Scraper.new.page('https://mods.factorio.com/').css('.active-filters-bar').css('.pagination').css('li')[4].text.split(' ')[0].to_i
+@new_mods_pages = Scraper.new.page('https://mods.factorio.com/?version=any').css('.active-filters-bar').css('.pagination').css('li')[4].text.split(' ')[0].to_i
 
 (1...@new_mods_pages).each do |page|
   @mods_page = Scraper.new.page("https://mods.factorio.com/#{page}").css('.mod-card').css('.mod-card-info-container').css('.mod-card-title').css('a')
@@ -119,6 +119,7 @@ end
   end
 
   break if @options.setup || @options.done
+
   File.write(@options.file, @mods.to_yaml)
 end
 
