@@ -11,7 +11,7 @@ GEM
     mime-types-data (3.2020.0512)
     mini_portile2 (2.4.0)
     multi_xml (0.6.0)
-    nokogiri (1.10.9)
+    nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
 
 PLATFORMS
