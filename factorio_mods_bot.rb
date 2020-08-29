@@ -87,10 +87,10 @@ else
   @mods = {}
 end
 
-@new_mods_pages = Scraper.new.page('https://mods.factorio.com/?version=any').css('.active-filters-bar').css('.pagination').css('li')[4].text.split(' ')[0].to_i
+@new_mods_pages = Scraper.new.page('https://mods.factorio.com/?version=any').css('div.flex-space-between:nth-child(2) > div:nth-child(2) > a:nth-child(6)').text.split(' ')[0].to_i
 
 (1...@new_mods_pages).each do |page|
-  @mods_page = Scraper.new.page("https://mods.factorio.com/#{page}").css('.mod-card').css('.mod-card-info-container').css('.mod-card-title').css('a')
+  @mods_page = Scraper.new.page("https://mods.factorio.com/#{page}").css('div.flex-column > div > div > div > div:nth-child(2) > h2 > a')
 
   (0...@mods_page.size).each do |mod|
     @mods[mod_name(mod)] = {} unless @mods.key?(mod_name(mod))
@@ -99,9 +99,9 @@ end
 
   (0...@mods_page.size).each do |mod|
     link = "https://mods.factorio.com#{@mods[mod_name(mod)]['link']}"
-    mod_page = Scraper.new.page(link).css('.mod-page-data-table')
-    author = mod_page.css('td')[1].text
-    online_version = mod_page.css('td')[11].text.split(' (')[0]
+    mod_page = Scraper.new.page(link).css('.sm-block')
+    author = mod_page.css('dl.panel-hole > dd:nth-child(2) > a').text
+    online_version = mod_page.css('dl.panel-hole:nth-child(2) > dd:nth-child(4)').text.strip.split(' (')[0]
 
     if @mods[mod_name(mod)]['version'] == online_version
       # processed all updated/new mods
