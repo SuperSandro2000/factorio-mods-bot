@@ -38,6 +38,10 @@ parser = OptionParser.new do |opts|
     @options.token = t
   end
 
+  opts.on('-v', '--verbose', 'Show more output.') do |_t|
+    @options.verbose = true
+  end
+
   opts.on_tail('-h', '--help', 'Show this help message') do
     puts opts
     exit
@@ -88,8 +92,10 @@ else
 end
 
 @new_mods_pages = Scraper.new.page('https://mods.factorio.com/?version=any').css('div.flex-space-between:nth-child(2) > div:nth-child(2) > a:nth-child(6)').text.split(' ')[0].to_i
+puts "Searching through #{@new_mods_pages} pages" if @options.verbose
 
 (1...@new_mods_pages).each do |page|
+  puts "Checking page #{page}" if @options.verbose
   @mods_page = Scraper.new.page("https://mods.factorio.com/#{page}").css('div.flex-column > div > div > div > div:nth-child(2) > h2 > a')
 
   (0...@mods_page.size).each do |mod|
@@ -98,6 +104,7 @@ end
   end
 
   (0...@mods_page.size).each do |mod|
+    puts "Checking mod #{@mods[mod_name(mod)]}" if @options.verbose
     link = "https://mods.factorio.com#{@mods[mod_name(mod)]['link']}"
     mod_page = Scraper.new.page(link).css('.sm-block')
     author = mod_page.css('dl.panel-hole > dd:nth-child(2) > a').text
