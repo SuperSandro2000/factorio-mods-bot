@@ -1,4 +1,4 @@
-FROM supersandro2000/base-alpine:edge
+FROM supersandro2000/base-alpine:3.13
 
 ENV USER factorio
 
