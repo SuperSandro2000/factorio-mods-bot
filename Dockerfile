@@ -17,14 +17,16 @@ ENV BUNDLE_SILENCE_ROOT_WARNING=1
 RUN apk add --no-cache --no-progress \
     ruby \
     ruby-bundler \
-    # use the prebuilt
-    ruby-nokogiri \
   && apk add --no-cache --no-progress --virtual .build-deps \
     gcc \
+    libxslt-dev \
     make \
     musl-dev \
+    pkgconf \
     ruby-dev \
+    zlib-dev \
   && bundle config set no-cache 'true' \
+  && bundle config build.nokogiri --use-system-libraries \
   && bundle install --gemfile=/app/Gemfile \
   && apk del --no-cache .build-deps \
 \
