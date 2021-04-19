@@ -15,6 +15,7 @@ COPY [ "Gemfile", "Gemfile.lock", "/app/" ]
 ENV BUNDLE_SILENCE_ROOT_WARNING=1
 # hadolint ignore=SC2016
 RUN apk add --no-cache --no-progress \
+    libxslt \
     ruby \
     ruby-bundler \
   && apk add --no-cache --no-progress --virtual .build-deps \
