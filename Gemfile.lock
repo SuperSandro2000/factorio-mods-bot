@@ -14,13 +14,10 @@ GEM
     nokogiri (1.13.10)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    nokogiri (1.13.10-x86_64-linux)
-      racc (~> 1.4)
     racc (1.6.1)
 
 PLATFORMS
   ruby
-  x86_64-linux
 
 DEPENDENCIES
   bigdecimal (~> 3.1)
