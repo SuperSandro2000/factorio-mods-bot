@@ -5,7 +5,7 @@ GEM
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    json (2.6.3)
+    json (2.7.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.5)
     multi_xml (0.6.0)
